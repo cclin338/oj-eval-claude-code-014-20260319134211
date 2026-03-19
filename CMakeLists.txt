@@ -15,7 +15,10 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/generated)
 
 file(GLOB_RECURSE main_src src/*.cpp)
 
-add_executable(code ${main_src}) # Add all *.cpp file after src/main.cpp, like src/Evalvisitor.cpp did
+add_executable(code ${main_src})
+
+# Link GMP for big integer support
+target_link_libraries(code gmp gmpxx)
 
 ### YOU CAN'T MODIFY THE CODE BELOW
 target_link_libraries(code PyAntlr)

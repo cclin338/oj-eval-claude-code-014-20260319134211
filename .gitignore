@@ -1,0 +1,9 @@
+CMakeFiles/
+CMakeCache.txt
+code
+compile_commands.json
+*.o
+*.a
+.vscode/
+*.swp
+*~
