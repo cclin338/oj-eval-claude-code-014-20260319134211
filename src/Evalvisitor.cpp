@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <gmpxx.h>
 
 EvalVisitor::EvalVisitor() {
     globalScope = std::make_shared<Scope>("global");
