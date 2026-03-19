@@ -4,7 +4,7 @@
 // FloatValue arithmetic operations
 ValuePtr FloatValue::add(const Value& other) const {
     if (other.isInt()) {
-        return makeFloat(value + dynamic_cast<const IntValue&>(other).getValue().get_d());
+        return makeFloat(value + static_cast<double>(dynamic_cast<const IntValue&>(other).getValue()));
     } else if (other.isFloat()) {
         return makeFloat(value + dynamic_cast<const FloatValue&>(other).getValue());
     }
@@ -13,7 +13,7 @@ ValuePtr FloatValue::add(const Value& other) const {
 
 ValuePtr FloatValue::subtract(const Value& other) const {
     if (other.isInt()) {
-        return makeFloat(value - dynamic_cast<const IntValue&>(other).getValue().get_d());
+        return makeFloat(value - static_cast<double>(dynamic_cast<const IntValue&>(other).getValue()));
     } else if (other.isFloat()) {
         return makeFloat(value - dynamic_cast<const FloatValue&>(other).getValue());
     }
@@ -22,7 +22,7 @@ ValuePtr FloatValue::subtract(const Value& other) const {
 
 ValuePtr FloatValue::multiply(const Value& other) const {
     if (other.isInt()) {
-        return makeFloat(value * dynamic_cast<const IntValue&>(other).getValue().get_d());
+        return makeFloat(value * static_cast<double>(dynamic_cast<const IntValue&>(other).getValue()));
     } else if (other.isFloat()) {
         return makeFloat(value * dynamic_cast<const FloatValue&>(other).getValue());
     }
@@ -35,7 +35,7 @@ ValuePtr FloatValue::divide(const Value& other) const {
         if (otherInt == 0) {
             throw std::runtime_error("division by zero");
         }
-        return makeFloat(value / otherInt.get_d());
+        return makeFloat(value / static_cast<double>(otherInt));
     } else if (other.isFloat()) {
         const auto& otherFloat = dynamic_cast<const FloatValue&>(other).getValue();
         if (otherFloat == 0.0) {
@@ -52,7 +52,7 @@ ValuePtr FloatValue::floorDivide(const Value& other) const {
         if (otherInt == 0) {
             throw std::runtime_error("division by zero");
         }
-        double result = value / otherInt.get_d();
+        double result = value / static_cast<double>(otherInt);
         return makeFloat(std::floor(result));
     } else if (other.isFloat()) {
         const auto& otherFloat = dynamic_cast<const FloatValue&>(other).getValue();
@@ -71,7 +71,7 @@ ValuePtr FloatValue::modulo(const Value& other) const {
         if (otherInt == 0) {
             throw std::runtime_error("modulo by zero");
         }
-        double remainder = std::fmod(value, otherInt.get_d());
+        double remainder = std::fmod(value, static_cast<double>(otherInt));
         return makeFloat(remainder);
     } else if (other.isFloat()) {
         const auto& otherFloat = dynamic_cast<const FloatValue&>(other).getValue();
@@ -87,7 +87,7 @@ ValuePtr FloatValue::modulo(const Value& other) const {
 // FloatValue comparison operations
 ValuePtr FloatValue::equal(const Value& other) const {
     if (other.isInt()) {
-        return makeBool(value == dynamic_cast<const IntValue&>(other).getValue().get_d());
+        return makeBool(value == static_cast<double>(dynamic_cast<const IntValue&>(other).getValue()));
     } else if (other.isFloat()) {
         return makeBool(value == dynamic_cast<const FloatValue&>(other).getValue());
     }
@@ -101,7 +101,7 @@ ValuePtr FloatValue::notEqual(const Value& other) const {
 
 ValuePtr FloatValue::less(const Value& other) const {
     if (other.isInt()) {
-        return makeBool(value < dynamic_cast<const IntValue&>(other).getValue().get_d());
+        return makeBool(value < static_cast<double>(dynamic_cast<const IntValue&>(other).getValue()));
     } else if (other.isFloat()) {
         return makeBool(value < dynamic_cast<const FloatValue&>(other).getValue());
     }
@@ -110,7 +110,7 @@ ValuePtr FloatValue::less(const Value& other) const {
 
 ValuePtr FloatValue::lessEqual(const Value& other) const {
     if (other.isInt()) {
-        return makeBool(value <= dynamic_cast<const IntValue&>(other).getValue().get_d());
+        return makeBool(value <= static_cast<double>(dynamic_cast<const IntValue&>(other).getValue()));
     } else if (other.isFloat()) {
         return makeBool(value <= dynamic_cast<const FloatValue&>(other).getValue());
     }

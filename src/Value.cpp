@@ -3,13 +3,30 @@
 #include <sstream>
 #include <stdexcept>
 
+// Factory functions
+ValuePtr makeInt(long long value);
+ValuePtr makeInt(const std::string& value);
+ValuePtr makeFloat(double value);
+ValuePtr makeFloat(const std::string& value);
+ValuePtr makeBool(bool value);
+ValuePtr makeString(const std::string& value);
+ValuePtr makeNone();
+ValuePtr makeTuple(const ValueList& elements);
+ValuePtr makeFunction(const std::string& name, const std::vector<std::string>& params, bool hasDefaults);
+#include <cmath>
+#include <algorithm>
+
 // Base Value class default implementations
-mpz_class Value::asInt() const {
+long long Value::asInt() const {
     throw std::runtime_error("Cannot convert " + toString() + " to int");
 }
 
 double Value::asFloat() const {
     throw std::runtime_error("Cannot convert " + toString() + " to float");
+}
+
+std::string Value::asBigIntString() const {
+    return toString();
 }
 
 bool Value::asBool() const {
@@ -203,10 +220,6 @@ ValuePtr NoneValue::notEqual(const Value& other) const {
 }
 
 // Factory functions
-ValuePtr makeInt(const mpz_class& value) {
-    return std::make_shared<IntValue>(value);
-}
-
 ValuePtr makeInt(long long value) {
     return std::make_shared<IntValue>(value);
 }

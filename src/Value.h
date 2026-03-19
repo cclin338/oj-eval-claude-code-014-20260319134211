@@ -6,8 +6,8 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include <variant>
-#include <gmpxx.h>
+#include <sstream>
+#include <limits>
 
 class Value;
 using ValuePtr = std::shared_ptr<Value>;
@@ -50,8 +50,9 @@ public:
     bool isFunction() const { return getType() == ValueType::FUNCTION; }
 
     // Conversion helpers
-    virtual mpz_class asInt() const;
+    virtual long long asInt() const;
     virtual double asFloat() const;
+    virtual std::string asBigIntString() const;
     virtual bool asBool() const;
 
     // Arithmetic operations
@@ -80,25 +81,29 @@ public:
     virtual ValuePtr unaryMinus() const;
 };
 
-// Integer value (arbitrary precision)
+// Integer value (standard long long)
 class IntValue : public Value {
 private:
-    mpz_class value;
+    long long value;
+    bool isOverflow;
+    std::string overflowValue;  // For very large numbers
 
 public:
-    IntValue() : value(static_cast<long>(0)) {}
-    IntValue(const mpz_class& v) : value(v) {}
-    IntValue(long long v) : value(static_cast<long>(v)) {}
-    IntValue(const std::string& s) : value(s) {}
+    IntValue() : value(0), isOverflow(false) {}
+    IntValue(long long v) : value(v), isOverflow(false) {}
+    IntValue(const std::string& s);
 
     ValueType getType() const override { return ValueType::INT; }
-    std::string toString() const override { return value.get_str(); }
-    ValuePtr copy() const override { return std::make_shared<IntValue>(value); }
+    std::string toString() const override;
+    ValuePtr copy() const override;
 
-    mpz_class getValue() const { return value; }
+    long long getValue() const { return value; }
+    bool isOverflowValue() const { return isOverflow; }
+    std::string getOverflowString() const { return overflowValue; }
 
-    mpz_class asInt() const override { return value; }
-    double asFloat() const override { return value.get_d(); }
+    long long asInt() const override { return value; }
+    double asFloat() const override { return static_cast<double>(value); }
+    std::string asBigIntString() const override;
     bool asBool() const override { return value != 0; }
 
     ValuePtr add(const Value& other) const override;
@@ -138,7 +143,7 @@ public:
 
     double getValue() const { return value; }
 
-    mpz_class asInt() const override { return mpz_class(static_cast<long>(value)); }
+    long long asInt() const override { return static_cast<long long>(value); }
     double asFloat() const override { return value; }
     bool asBool() const override { return value != 0.0; }
 
@@ -179,7 +184,7 @@ public:
 
     bool getValue() const { return value; }
 
-    mpz_class asInt() const override { return value ? 1 : 0; }
+    long long asInt() const override { return value ? 1 : 0; }
     double asFloat() const override { return value ? 1.0 : 0.0; }
     bool asBool() const override { return value; }
 
@@ -293,7 +298,6 @@ public:
 };
 
 // Factory functions
-ValuePtr makeInt(const mpz_class& value);
 ValuePtr makeInt(long long value);
 ValuePtr makeInt(const std::string& value);
 ValuePtr makeFloat(double value);

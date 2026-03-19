@@ -17,9 +17,6 @@ file(GLOB_RECURSE main_src src/*.cpp)
 
 add_executable(code ${main_src})
 
-# Link GMP for big integer support
-target_link_libraries(code gmp gmpxx)
-
 ### YOU CAN'T MODIFY THE CODE BELOW
 target_link_libraries(code PyAntlr)
 target_link_libraries(code antlr4-runtime)

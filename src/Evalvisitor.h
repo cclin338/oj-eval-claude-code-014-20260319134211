@@ -9,6 +9,17 @@
 #include <vector>
 #include <string>
 
+// Forward declarations for factory functions
+ValuePtr makeInt(long long value);
+ValuePtr makeInt(const std::string& value);
+ValuePtr makeFloat(double value);
+ValuePtr makeFloat(const std::string& value);
+ValuePtr makeBool(bool value);
+ValuePtr makeString(const std::string& value);
+ValuePtr makeNone();
+ValuePtr makeTuple(const ValueList& elements);
+ValuePtr makeFunction(const std::string& name, const std::vector<std::string>& params, bool hasDefaults);
+
 class EvalVisitor : public Python3ParserBaseVisitor {
 private:
     ScopePtr currentScope;
